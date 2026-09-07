@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+.venv/
+venv/
+__pycache__/
+# Builds
+dist/
+build/
+.next/
+.turbo/
+*.tsbuildinfo
+# Entorno y secretos (NUNCA commitear)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+# OS/IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# Python
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+# Logs
+*.log
+orchestrator.log*

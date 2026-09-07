@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    volumes: ["redis_data:/data"]
+    command: ["redis-server", "--appendonly", "yes"]
+  engine:
+    build: .
+    depends_on: [redis]
+    environment:
+      REDIS_URL: redis://redis:6379
+      GOOGLE_PLACES_KEY: ${GOOGLE_PLACES_KEY}
+    command: ["npm", "run", "worker"]
+volumes:
+  redis_data:
