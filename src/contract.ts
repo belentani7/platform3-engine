@@ -81,3 +81,31 @@ export function redisConnection(raw: string | undefined, allowRemote = false): {
     ...(url.protocol === "rediss:" ? { tls: {} } : {}),
   };
 }
+
+/** Fail closed: an explicit dry-run must never enqueue a persistent job. */
+export function parseCliArgs(args: readonly string[]): { json: string; enqueue: boolean } {
+  let json: string | undefined;
+  let enqueue = false;
+  let dryRun = false;
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+    if (arg === '--json') {
+      if (json !== undefined || i + 1 >= args.length || args[i + 1].startsWith('--')) {
+        throw new Error('Invalid --json argument');
+      }
+      json = args[++i];
+    } else if (arg === '--enqueue') {
+      if (enqueue) throw new Error('Duplicate --enqueue');
+      enqueue = true;
+    } else if (arg === '--dry-run') {
+      if (dryRun) throw new Error('Duplicate --dry-run');
+      dryRun = true;
+    } else {
+      // Do not echo unknown arguments: they might contain private data or credentials.
+      throw new Error('Unexpected argument');
+    }
+  }
+  if (json === undefined) throw new Error('--json is required');
+  if (enqueue && dryRun) throw new Error('Cannot combine --dry-run and --enqueue');
+  return { json, enqueue };
+}
