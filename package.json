@@ -1,4 +1,28 @@
-{"name":"figura-engine","version":"1.0.0","private":true,"license":"AGPL-3.0-only",
-"scripts":{"dev":"tsx src/queues.ts","worker":"tsx src/workers/enrich.worker.ts","build":"tsc src/queues.ts src/workers/enrich.worker.ts src/workers/search.worker.ts src/workers/webhook.worker.ts --outDir dist"},
-"dependencies":{"bullmq":"^5.4.0","ioredis":"^5.3.2","zod":"^3.23.8","cheerio":"^1.0.0","winston":"^3.13.0"},
-"devDependencies":{"tsx":"^4.7.0","typescript":"^5.4.0","@types/node":"^20.0.0"}}
+{
+  "name": "platform3-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "dev": "tsx src/queues.ts",
+    "enqueue": "tsx src/queues.ts --enqueue",
+    "worker": "tsx src/workers/enrich.worker.ts",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
+    "test": "node --experimental-strip-types --test tests/engine.test.mjs"
+  },
+  "dependencies": {
+    "bullmq": "^5.4.0",
+    "ioredis": "^5.3.2",
+    "zod": "^3.23.8",
+    "cheerio": "^1.0.0",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0"
+  }
+}
