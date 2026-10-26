@@ -1,18 +1,19 @@
-import { enrichLead, normalizeLead, QUEUE_NAME, redisConnection, type LeadInput } from './contract.js';
+import { enrichLead, normalizeLead, QUEUE_NAME, redisConnection, parseCliArgs, type LeadInput } from './contract.js';
 
-const args = process.argv.slice(2);
-const jsonAt = args.indexOf('--json');
-const enqueue = args.includes('--enqueue');
-
-if (jsonAt < 0 || jsonAt + 1 >= args.length || args.some((arg, i) => arg.startsWith('--') && arg !== '--json' && arg !== '--dry-run' && arg !== '--enqueue')) {
+let options: ReturnType<typeof parseCliArgs> | undefined;
+try {
+  options = parseCliArgs(process.argv.slice(2));
+} catch {
   console.error('Usage: npm run dev -- --dry-run --json \'{"sourceId":"demo-1","name":"Example"}\'');
   console.error('To write to local Redis: npm run enqueue -- --json \'{...}\'');
   process.exitCode = 2;
-} else {
+}
+
+if (options) {
   try {
-    const input: unknown = JSON.parse(args[jsonAt + 1]);
+    const input: unknown = JSON.parse(options.json);
     const lead = normalizeLead(input);
-    if (!enqueue) {
+    if (!options.enqueue) {
       console.log(JSON.stringify(enrichLead(lead)));
     } else {
       const { Queue } = await import('bullmq');
